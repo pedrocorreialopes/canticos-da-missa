@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cânticos da Missa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="header-cross">✞</div>
+      <h1 class="site-title">Cânticos da Missa</h1>
+      <p class="site-subtitle">Folha Litúrgica de Cânticos</p>
+    </div>
+    <!-- Stats bar -->
+    <div class="header-stats" id="header-stats">
+      <!-- preenchido via JS -->
+    </div>
+    <div class="header-ornament"></div>
+
+    <!-- Header actions -->
+    <div class="header-actions">
+      <button id="btn-favoritos-view" class="hdr-btn" title="Ver favoritos">
+        <i class="fas fa-heart"></i>
+        <span id="fav-count-badge" class="fav-badge hidden">0</span>
+      </button>
+      <button id="btn-dark-mode" class="hdr-btn" title="Alternar modo escuro">
+        <i class="fas fa-moon"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- CONTROLS -->
+  <div class="controls-bar" id="controls-bar">
+    <div class="controls-inner">
+      <div class="search-wrapper">
+        <i class="fas fa-search search-icon"></i>
+        <input type="text" id="search-input" class="search-input" placeholder="Buscar cântico ou letra…" autocomplete="off" />
+        <button id="clear-search" class="clear-btn" title="Limpar busca"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="filter-tabs" id="filter-tabs" role="tablist" aria-label="Filtrar por seção">
+        <button class="tab-btn active" data-section="all" role="tab" aria-selected="true">Todos</button>
+        <button class="tab-btn" data-section="favoritos" role="tab" aria-selected="false">
+          <i class="fas fa-heart"></i> Favoritos
+        </button>
+        <button class="tab-btn" data-section="entrada" role="tab" aria-selected="false">Entrada</button>
+        <button class="tab-btn" data-section="gloria" role="tab" aria-selected="false">Glória</button>
+        <button class="tab-btn" data-section="salmo" role="tab" aria-selected="false">Salmo</button>
+        <button class="tab-btn" data-section="ofertorio" role="tab" aria-selected="false">Ofertório</button>
+        <button class="tab-btn" data-section="santo" role="tab" aria-selected="false">Santo</button>
+        <button class="tab-btn" data-section="comunhao" role="tab" aria-selected="false">Comunhão</button>
+        <button class="tab-btn" data-section="final" role="tab" aria-selected="false">Final</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content" id="main-content">
+    <div id="no-results" class="no-results hidden">
+      <i class="fas fa-music"></i>
+      <p id="no-results-msg">Nenhum cântico encontrado.</p>
+    </div>
+    <div id="canticos-grid" class="canticos-grid" role="list"></div>
+  </main>
+
+  <!-- MODAL LETRA COMPLETA -->
+  <div id="modal-overlay" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title-text">
+    <div class="modal-box">
+      <!-- Toolbar do modal -->
+      <div class="modal-toolbar">
+        <button id="modal-prev" class="modal-nav-btn" title="Cântico anterior" aria-label="Cântico anterior">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <div class="modal-toolbar-center">
+          <span id="modal-counter" class="modal-counter"></span>
+        </div>
+        <div class="modal-toolbar-right">
+          <button id="modal-fav" class="modal-action-btn" title="Adicionar aos favoritos" aria-label="Favoritar">
+            <i class="far fa-heart"></i>
+          </button>
+          <button id="modal-fullscreen" class="modal-action-btn" title="Modo celebração (tela cheia)" aria-label="Modo celebração">
+            <i class="fas fa-expand"></i>
+          </button>
+          <button id="modal-print" class="modal-action-btn" title="Imprimir este cântico" aria-label="Imprimir">
+            <i class="fas fa-print"></i>
+          </button>
+          <button id="modal-close" class="modal-action-btn modal-close-btn" aria-label="Fechar">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <button id="modal-next" class="modal-nav-btn" title="Próximo cântico" aria-label="Próximo cântico">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+
+      <div id="modal-content" class="modal-content"></div>
+    </div>
+  </div>
+
+  <!-- MODO CELEBRAÇÃO (fullscreen) -->
+  <div id="celebration-overlay" class="celebration-overlay hidden" role="dialog" aria-modal="true">
+    <div class="celebration-controls">
+      <button id="cel-prev" class="cel-btn" title="Anterior"><i class="fas fa-chevron-left"></i></button>
+      <button id="cel-exit" class="cel-btn cel-exit" title="Sair do modo celebração"><i class="fas fa-compress"></i></button>
+      <button id="cel-next" class="cel-btn" title="Próximo"><i class="fas fa-chevron-right"></i></button>
+    </div>
+    <div class="celebration-body">
+      <div id="cel-badge" class="cel-badge"></div>
+      <h2 id="cel-title" class="cel-title"></h2>
+      <div id="cel-letra" class="cel-letra"></div>
+    </div>
+    <div class="celebration-footer">
+      <span id="cel-counter"></span>
+      <span class="cel-hint"><i class="fas fa-keyboard"></i> ← → para navegar · Esc para sair</span>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast" class="toast hidden" role="alert" aria-live="polite"></div>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-ornament">✦ ✞ ✦</div>
+    <p>Cânticos da Missa &mdash; Folha Litúrgica</p>
+  </footer>
+
+  <script src="js/canticos.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
